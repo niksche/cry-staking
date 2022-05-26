@@ -25,17 +25,19 @@ contract Staking {
         stakingTime = 0 minutes;
     }
 
-    // accept lp token from msg.sender => after 10 minutes it will 
+    // Withdraw {amount} of LP tokens of {lpToken} from {msg.sender}
+    // updates balances in contract
     function stake(uint amount) public {
-        require(block.timestamp >= stakingTimestamp[msg.sender] + stakingTime, "Previous staking is active");
-        // will work only if approved previoslly was called
+        //FYI: Will work only if approved previoslly was called
         lpToken.transferFrom(msg.sender, address(this), amount);
         lpTokensbalances[msg.sender] += amount;
-        totalStakedAmount += amount;
         stakingTimestamp[msg.sender] = block.timestamp;
         claimedRevard[msg.sender] = false;
+        totalStakedAmount += amount;
     }
 
+    // Withdraw some amount of {rewardToken} from contract to msg.sender 
+    // with respect to the mount of staked LP tokens of {lpToken}
     function claim() public {
         require(claimedRevard[msg.sender] == false, "Easy cowboy");
         require(lpTokensbalances[msg.sender] != 0, "User must have at least something to be deposited");
@@ -44,9 +46,9 @@ contract Staking {
         uint rewardTokenAmount = stakingsRevardPercent * lpTokensbalances[msg.sender] / 100; 
         rewardToken.transfer(msg.sender, rewardTokenAmount);
         claimedRevard[msg.sender] = true;
-
     }
 
+    // Withdraw amount of staked LP tokens of {lpToken} from contract back to msg.sender
     function unstake() public {
         require(lpTokensbalances[msg.sender] != 0, "User must have at least something to be deposited");
         require(block.timestamp >= stakingTimestamp[msg.sender] + 2 * stakingTime, "Too early for withdrawing money honey");
