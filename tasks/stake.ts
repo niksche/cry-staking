@@ -1,12 +1,12 @@
 import { ContractReceipt, ContractTransaction } from "ethers";
-import {task} from "hardhat/config";
-import ERC20ABI from '../artifacts/contracts/ERC20.sol/ERC20.json';
-import stakingAbi from '../artifacts/contracts/Staking.sol/Staking.json';
+import { task } from "hardhat/config";
+import ERC20ABI from "../artifacts/contracts/ERC20.sol/ERC20.json";
+import stakingAbi from "../artifacts/contracts/Staking.sol/Staking.json";
 
 task("stake", "calls fro stake function")
-//   .addParam("tokenAddres", "address of contract")
-//   .addParam("spender", "address which is alowed to spend owner's tokens")
-//   .addParam("value", "token amount to be transfered")
+  //   .addParam("tokenAddres", "address of contract")
+  //   .addParam("spender", "address which is alowed to spend owner's tokens")
+  //   .addParam("value", "token amount to be transfered")
   .setAction(async (taskArgs, hre) => {
     const erc20abi = ERC20ABI.abi;
 
@@ -32,18 +32,14 @@ task("stake", "calls fro stake function")
     );
 
     const stakingContract = new hre.ethers.Contract(
-        "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
-        stakingAbi.abi,
-        owner
-        );
-
-
-
-        
-
-    const transferTx: ContractTransaction = await stakingContract.connect(
+      "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+      stakingAbi.abi,
       owner
-    ).stake(0);
+    );
+
+    const transferTx: ContractTransaction = await stakingContract
+      .connect(owner)
+      .stake(0);
 
     const receipt: ContractReceipt = await transferTx.wait();
 
@@ -60,5 +56,4 @@ task("stake", "calls fro stake function")
     //   "by",
     //   TransferEvent.args?._spender
     // );
-
   });

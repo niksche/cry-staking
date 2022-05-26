@@ -7,20 +7,19 @@ describe("Staking", function () {
   let owner: SignerWithAddress;
   let address2: SignerWithAddress;
 
-  beforeEach(async function() {
-    
+  beforeEach(async function () {
     [owner, address2] = await ethers.getSigners();
 
-    let stakingContractFactory = await ethers.getContractFactory("Staking", owner);
+    const stakingContractFactory = await ethers.getContractFactory(
+      "Staking",
+      owner
+    );
     stakingContractFactory.deploy("todo: someaddress", "someaddress");
+  });
 
-
-  })
-
-  describe("Deployment", function() {
-    it("Should deploy contract and set something to smth", function() {
+  describe("Deployment", function () {
+    it("Should deploy contract and set something to smth", function () {
       expect(BigNumber.from("0")).to.be.equal(BigNumber.from("0"));
-    })
-  })
-})
-
+    });
+  });
+});

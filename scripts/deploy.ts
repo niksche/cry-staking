@@ -15,7 +15,10 @@ async function main() {
 
   // We get the contract to deploy
   const Greeter = await ethers.getContractFactory("Staking");
-  const greeter = await Greeter.deploy("0x5FbDB2315678afecb367f032d93F642f64180aa3", "0x5FbDB2315678afecb367f032d93F642f64180aa3");
+  const greeter = await Greeter.deploy(
+    "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+    "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+  );
 
   await greeter.deployed();
 

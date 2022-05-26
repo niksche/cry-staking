@@ -1,20 +1,16 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "hardhat/console.sol";
-
 import "./ERC20.sol";
 
-
 contract Staking {
-
-    mapping(address => uint) public lpTokensbalances;
-    mapping(address => uint) public stakingTimestamp;
+    mapping(address => uint256) public lpTokensbalances;
+    mapping(address => uint256) public stakingTimestamp;
     mapping(address => bool) public claimedRevard;
 
-    uint public totalStakedAmount;
-    uint public stakingsRevardPercent;
-    uint public stakingTime;
+    uint256 public totalStakedAmount;
+    uint256 public stakingsRevardPercent;
+    uint256 public stakingTime;
 
     ERC20 public rewardToken; // - CRY token
     ERC20 public lpToken; // - Any other token you would love to chose;
@@ -27,7 +23,7 @@ contract Staking {
 
     // Withdraw {amount} of LP tokens of {lpToken} from {msg.sender}
     // updates balances in contract
-    function stake(uint amount) public {
+    function stake(uint256 amount) public {
         //FYI: Will work only if approved previoslly was called
         lpToken.transferFrom(msg.sender, address(this), amount);
         lpTokensbalances[msg.sender] += amount;
@@ -36,30 +32,45 @@ contract Staking {
         totalStakedAmount += amount;
     }
 
-    // Withdraw some amount of {rewardToken} from contract to msg.sender 
+    // Withdraw some amount of {rewardToken} from contract to msg.sender
     // with respect to the mount of staked LP tokens of {lpToken}
     function claim() public {
         require(claimedRevard[msg.sender] == false, "Easy cowboy");
-        require(lpTokensbalances[msg.sender] != 0, "User must have at least something to be deposited");
-        require(block.timestamp >= stakingTimestamp[msg.sender] + 2 * stakingTime, "Too early for withdrawing money honey");
+        require(
+            lpTokensbalances[msg.sender] != 0,
+            "User must have at least something to be deposited"
+        );
+        require(
+            block.timestamp >= stakingTimestamp[msg.sender] + 2 * stakingTime,
+            "Too early for withdrawing money honey"
+        );
 
-        uint rewardTokenAmount = stakingsRevardPercent * lpTokensbalances[msg.sender] / 100; 
+        uint256 rewardTokenAmount = (stakingsRevardPercent *
+            lpTokensbalances[msg.sender]) / 100;
         rewardToken.transfer(msg.sender, rewardTokenAmount);
         claimedRevard[msg.sender] = true;
     }
 
     // Withdraw amount of staked LP tokens of {lpToken} from contract back to msg.sender
     function unstake() public {
-        require(lpTokensbalances[msg.sender] != 0, "User must have at least something to be deposited");
-        require(block.timestamp >= stakingTimestamp[msg.sender] + 2 * stakingTime, "Too early for withdrawing money honey");
+        require(
+            lpTokensbalances[msg.sender] != 0,
+            "User must have at least something to be deposited"
+        );
+        require(
+            block.timestamp >= stakingTimestamp[msg.sender] + 2 * stakingTime,
+            "Too early for withdrawing money honey"
+        );
         lpToken.transfer(msg.sender, lpTokensbalances[msg.sender]);
     }
 
-    function changeStakingsTime(uint _stakingTime) private {
+    function changeStakingsTime(uint256 _stakingTime) private {
         stakingTime = _stakingTime;
     }
 
-    function changeStakingsRevardPercent(uint _stakingsRevardPercent) private {
+    function changeStakingsRevardPercent(uint256 _stakingsRevardPercent)
+        private
+    {
         stakingsRevardPercent = _stakingsRevardPercent;
     }
 }
