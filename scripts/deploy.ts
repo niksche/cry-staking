@@ -12,14 +12,34 @@ async function main() {
   // If this script is run directly using `node` you may want to call compile
   // manually to make sure everything is compiled
   // await hre.run('compile');
-  const a : string  = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
-  const b : string  = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+  const _lpTokenAddress : string  = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+  const _rewardTokenAddress : string  = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+
+  const provider = new ethers.providers.JsonRpcProvider();
+
+  const providerCode = await provider.getCode(_lpTokenAddress);
+
+  if (providerCode) {
+    if (providerCode === "0x") {
+      console.log(`Contract at ${_lpTokenAddress} does not exist`);
+      return;
+    }
+  }
+
+  const providerCode2 = await provider.getCode(_rewardTokenAddress);
+
+  if (providerCode2) {
+    if (providerCode2 === "0x") {
+      console.log(`Contract at ${_rewardTokenAddress} does not exist`);
+      return;
+    }
+  }
 
   // We get the contract to deploy
   const stakingFactory = await ethers.getContractFactory("Staking");
   const stakingContract = await stakingFactory.deploy(
-    a,
-    b
+    _lpTokenAddress,
+    _rewardTokenAddress
   );
 
   await stakingContract.deployed();
