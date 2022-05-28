@@ -3,21 +3,15 @@ import { task } from "hardhat/config";
 import ERC20ABI from "../artifacts/contracts/ERC20.sol/ERC20.json";
 import stakingAbi from "../artifacts/contracts/Staking.sol/Staking.json";
 
-task("stake", "stakes {amount} of tokens at {contractAddress} staking contract")
+task("unstake", "claims user's reward for staked token from contract at {contractAddress}")
     .addParam("contractAddress", "address of contract")
-    .addParam("amount", "token amount to be stake")
   .setAction(async (taskArgs, hre) => {
-    const erc20abi = ERC20ABI.abi;
-
     const provider = new hre.ethers.providers.JsonRpcProvider();
-
-    const iface = new hre.ethers.utils.Interface(erc20abi);
-
     const providerCode = await provider.getCode(taskArgs.contractAddress);
 
     if (providerCode) {
       if (providerCode === "0x") {
-        console.log("Contract with such an address does not exist");
+        console.log(`Contract at ${taskArgs.contractAddress} does not exist`);
         return;
       }
     }
@@ -30,11 +24,11 @@ task("stake", "stakes {amount} of tokens at {contractAddress} staking contract")
       owner
     );
 
-    const transferTx: ContractTransaction = await stakingContract
+    const unstakeTx: ContractTransaction = await stakingContract
       .connect(owner)
-      .stake(taskArgs.amount);
+      .claim();
 
-    const receipt: ContractReceipt = await transferTx.wait();
+    const receipt: ContractReceipt = await unstakeTx.wait();
 
     // const TransferEvent = receipt.events
     //   ? receipt.events[0]
