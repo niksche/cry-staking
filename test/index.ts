@@ -10,6 +10,17 @@ describe("Staking", function () {
   beforeEach(async function () {
     [owner, address2] = await ethers.getSigners();
 
+    const cryTokenFactory = await ethers.getContractFactory(
+      "ERC20",
+      owner
+    );
+
+    const d = await cryTokenFactory.deploy("Heh", "hehe", 1);
+
+    const dtxReceipt = await d.deployTransaction.wait();
+
+    console.log("Contract deployed to :", dtxReceipt.contractAddress);
+
     const stakingContractFactory = await ethers.getContractFactory(
       "Staking",
       owner

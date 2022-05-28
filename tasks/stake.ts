@@ -4,9 +4,8 @@ import ERC20ABI from "../artifacts/contracts/ERC20.sol/ERC20.json";
 import stakingAbi from "../artifacts/contracts/Staking.sol/Staking.json";
 
 task("stake", "calls fro stake function")
-  //   .addParam("tokenAddres", "address of contract")
-  //   .addParam("spender", "address which is alowed to spend owner's tokens")
-  //   .addParam("value", "token amount to be transfered")
+    .addParam("contractAddress", "address of contract")
+    .addParam("amount", "token amount to be stake")
   .setAction(async (taskArgs, hre) => {
     const erc20abi = ERC20ABI.abi;
 
@@ -14,32 +13,26 @@ task("stake", "calls fro stake function")
 
     const iface = new hre.ethers.utils.Interface(erc20abi);
 
-    // const providerCode = await provider.getCode(taskArgs.tokenAddres);
+    const providerCode = await provider.getCode(taskArgs.contractAddress);
 
-    // if (providerCode) {
-    //   if (providerCode === "0x") {
-    //     console.log("Contract with such an address does not exist");
-    //     return;
-    //   }
-    // }
+    if (providerCode) {
+      if (providerCode === "0x") {
+        console.log("Contract with such an address does not exist");
+        return;
+      }
+    }
 
     const [owner] = await hre.ethers.getSigners();
 
-    const CryptonToken = new hre.ethers.Contract(
-      "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-      erc20abi,
-      owner
-    );
-
     const stakingContract = new hre.ethers.Contract(
-      "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+      taskArgs.contractAddress,
       stakingAbi.abi,
       owner
     );
 
     const transferTx: ContractTransaction = await stakingContract
       .connect(owner)
-      .stake(0);
+      .stake(taskArgs.amount);
 
     const receipt: ContractReceipt = await transferTx.wait();
 
