@@ -12,8 +12,11 @@ async function main() {
   // If this script is run directly using `node` you may want to call compile
   // manually to make sure everything is compiled
   // await hre.run('compile');
-  const _lpTokenAddress : string  = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
-  const _rewardTokenAddress : string  = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+  const _lpTokenAddress: string = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+  const _rewardTokenAddress: string =
+    "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+
+  const _duration = 60;
 
   const provider = new ethers.providers.JsonRpcProvider();
 
@@ -39,7 +42,8 @@ async function main() {
   const stakingFactory = await ethers.getContractFactory("Staking");
   const stakingContract = await stakingFactory.deploy(
     _lpTokenAddress,
-    _rewardTokenAddress
+    _rewardTokenAddress,
+    _duration
   );
 
   await stakingContract.deployed();

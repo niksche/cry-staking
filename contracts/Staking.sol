@@ -2,8 +2,10 @@
 pragma solidity ^0.8.0;
 
 import "./ERC20.sol";
+import "hardhat/console.sol";
 
 contract Staking {
+    address private owner;
     mapping(address => uint256) public lpTokensbalances;
     mapping(address => uint256) public stakingTimestamp;
     mapping(address => bool) public claimedRevard;
@@ -15,17 +17,25 @@ contract Staking {
     ERC20 public rewardToken; // - CRY token
     ERC20 public lpToken; // - Any other token you would love to chose;
 
-    constructor(address _lpTokenAddress, address _rewardTokenAddress) {
+    constructor(
+        address _lpTokenAddress,
+        address _rewardTokenAddress,
+        uint256 _duration
+    ) {
         rewardToken = ERC20(_lpTokenAddress);
         lpToken = ERC20(_rewardTokenAddress);
-        stakingTime = 0 minutes;
+        stakingTime = _duration;
+        owner = msg.sender;
     }
 
     // Withdraw {amount} of LP tokens of {lpToken} from {msg.sender}
     // updates balances in contract
     function stake(uint256 amount) public {
         //FYI: Will work only if approved previoslly was called
+        // console.log("msg.sender: ", msg.sender);
+        // console.log(address(this));
         lpToken.transferFrom(msg.sender, address(this), amount);
+
         lpTokensbalances[msg.sender] += amount;
         stakingTimestamp[msg.sender] = block.timestamp;
         claimedRevard[msg.sender] = false;
@@ -62,15 +72,18 @@ contract Staking {
             "Too early for withdrawing money honey"
         );
         lpToken.transfer(msg.sender, lpTokensbalances[msg.sender]);
+        lpTokensbalances[msg.sender] -= lpTokensbalances[msg.sender];
     }
 
-    function changeStakingsTime(uint256 _stakingTime) private {
+    function changeStakingsTime(uint256 _stakingTime) external {
+        require(msg.sender == owner, "onlyowner function!");
         stakingTime = _stakingTime;
     }
 
     function changeStakingsRevardPercent(uint256 _stakingsRevardPercent)
-        private
+        external
     {
+        require(msg.sender == owner, "onlyowner function!");
         stakingsRevardPercent = _stakingsRevardPercent;
     }
 }

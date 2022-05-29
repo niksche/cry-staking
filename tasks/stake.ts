@@ -4,8 +4,8 @@ import ERC20ABI from "../artifacts/contracts/ERC20.sol/ERC20.json";
 import stakingAbi from "../artifacts/contracts/Staking.sol/Staking.json";
 
 task("stake", "stakes {amount} of tokens at {contractAddress} staking contract")
-    .addParam("contractAddress", "address of contract")
-    .addParam("amount", "token amount to be stake")
+  .addParam("contractAddress", "address of contract")
+  .addParam("amount", "token amount to be stake")
   .setAction(async (taskArgs, hre) => {
     const erc20abi = ERC20ABI.abi;
 

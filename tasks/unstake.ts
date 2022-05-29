@@ -4,7 +4,7 @@ import ERC20ABI from "../artifacts/contracts/ERC20.sol/ERC20.json";
 import stakingAbi from "../artifacts/contracts/Staking.sol/Staking.json";
 
 task("unstake", "unstake user's token from contract at {contractAddress}")
-    .addParam("contractAddress", "address of contract")
+  .addParam("contractAddress", "address of contract")
   .setAction(async (taskArgs, hre) => {
     const provider = new hre.ethers.providers.JsonRpcProvider();
     const providerCode = await provider.getCode(taskArgs.contractAddress);
