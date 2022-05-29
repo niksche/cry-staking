@@ -2,8 +2,6 @@
 
 pragma solidity ^0.8.0;
 
-import "hardhat/console.sol";
-
 contract ERC20 {
     string public name;
     string public symbol;
@@ -72,13 +70,6 @@ contract ERC20 {
         uint256 _value
     ) public returns (bool success) {
         success = false;
-        // console.log("[ERC20]: _from", _from);
-        // console.log("[ERC20]: _to", _to);
-        // console.log(
-        //     "[ERC20]: allowanceMap[_from][_to]: ",
-        //     allowanceMap[_from][_to]
-        // );
-        // console.log("[ERC20]: _value: ", _value);
         require(allowanceMap[_from][_to] >= _value, "asking too much money");
         require(balances[_from] >= _value, "_from has not enough money");
         balances[_from] -= _value;

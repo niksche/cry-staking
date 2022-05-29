@@ -2,7 +2,6 @@
 pragma solidity ^0.8.0;
 
 import "./ERC20.sol";
-import "hardhat/console.sol";
 
 contract Staking {
     address private owner;
@@ -32,8 +31,6 @@ contract Staking {
     // updates balances in contract
     function stake(uint256 amount) public {
         //FYI: Will work only if approved previoslly was called
-        // console.log("msg.sender: ", msg.sender);
-        // console.log(address(this));
         lpToken.transferFrom(msg.sender, address(this), amount);
 
         lpTokensbalances[msg.sender] += amount;
